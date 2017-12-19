@@ -205,6 +205,9 @@ function handlePostback(sender_psid, received_postback) {
     else if (payload === 'no') {
         response = { "text": "Oops, try sending another image." }
     }
+    else if (payload === 'play') {
+        response = generateQuestion(sender_psid, 0, 0);
+    }
     else if (payload === 'quit') {
         response = { "text": "Thank you. See you next time!" }
     }
@@ -224,6 +227,8 @@ function handlePostback(sender_psid, received_postback) {
         }
         if (question_idx < 10) {
             response = generateQuestion(sender_psid, question_idx + 1, score);
+            callSendAPI(sender_psid, response);
+            return;
         }
         else {
             response = { "text": "Game Over. Score = " + score + " / " + (a[0] + 1) }
