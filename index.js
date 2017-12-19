@@ -165,6 +165,7 @@ function generateQuestion(sender_psid, question_idx) {
             }
         }
     }
+    return response;
 }
 
 function callSendAPI(sender_psid, response) {
