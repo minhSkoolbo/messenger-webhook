@@ -136,6 +136,7 @@ function generateQuestion(sender_psid, question_idx, score) {
     let y = Math.floor(Math.random() * 12);
     let a1 = x * y + Math.floor(Math.random() * 2);
     let a2 = x * y + Math.floor(Math.random() * 2);
+    if (a1 == a2) a2++;
     let response = {
         "attachment": {
             "type": "template",
@@ -219,19 +220,20 @@ function handlePostback(sender_psid, received_postback) {
         if (answer == 1) {
             ++score;
             response = { "text": "Correct! +1" }
-            callSendAPI(sender_psid, response);
         }
         else {
             response = { "text": "Oops, wrong answer! -1" }
-            callSendAPI(sender_psid, response);
         }
-        if (question_idx < 10) {
+
+        if (question_idx < 9) {
+            callSendAPI(sender_psid, response);
+
             response = generateQuestion(sender_psid, question_idx + 1, score);
             callSendAPI(sender_psid, response);
             return;
         }
         else {
-            response = { "text": "Game Over. Score = " + score + " / " + (a[0] + 1) }
+            response = { "text": "Game Over. Score = " + score + " / " + question_idx }
             callSendAPI(sender_psid, response);
 
             response = {
