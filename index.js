@@ -148,17 +148,17 @@ function generateQuestion(sender_psid, question_idx) {
                         {
                             "type": "postback",
                             "title": a1,
-                            "payload": question_idx + '|' + a1 == x * y ? 1 : 0,
+                            "payload": question_idx + "|" + (a1 == x * y ? 1 : 0),
                         },
                         {
                             "type": "postback",
                             "title": a2,
-                            "payload": question_idx + '|' + a2 == x * y ? 1 : 0,
+                            "payload": question_idx + "|" + (a2 == x * y ? 1 : 0),
                         },
                         {
                             "type": "postback",
                             "title": "None of the above",
-                            "payload": question_idx + '|' + (a1 != x * y && a2 != x * y ? 1 : 0),
+                            "payload": question_idx + "|" + (a1 != x * y && a2 != x * y ? 1 : 0),
                         }
                     ],
                 }]
