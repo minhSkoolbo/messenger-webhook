@@ -92,7 +92,7 @@ function handleMessage(sender_psid, received_message) {
         else {
             // Create the payload for a basic text message
             response = {
-                "text": `You sent the message: "${received_message.text}". Now send me an image!`
+                "text": `You said: "${received_message.text}". Now let's play game!`
             }
         }
     }
