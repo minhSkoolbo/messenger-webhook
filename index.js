@@ -148,17 +148,17 @@ function generateQuestion(sender_psid, question_idx) {
                         {
                             "type": "postback",
                             "title": a1,
-                            "payload": a1 == x * y,
+                            "payload": question_idx + '|' + a1 == x * y ? 1 : 0,
                         },
                         {
                             "type": "postback",
                             "title": a2,
-                            "payload": a2 == x * y,
+                            "payload": question_idx + '|' + a2 == x * y ? 1 : 0,
                         },
                         {
                             "type": "postback",
                             "title": "None of the above",
-                            "payload": a1 != x * y && a2 != x * y,
+                            "payload": question_idx + '|' + (a1 != x * y && a2 != x * y ? 1 : 0),
                         }
                     ],
                 }]
@@ -197,17 +197,26 @@ function handlePostback(sender_psid, received_postback) {
 
     // Get the payload for the postback
     let payload = received_postback.payload;
-
+    console.log('Received payload: ' + payload);
     // Set the response based on the postback payload
     if (payload === 'yes') {
         response = { "text": "Thanks!" }
     } else if (payload === 'no') {
         response = { "text": "Oops, try sending another image." }
     }
-    else if (payload === true) {
-        response = { "text": "+1" }
-    } else if (payload === false) {
-        response = { "text": "Oops, wrong answer -1" }
+    else if (payload.include('|')) {
+        let a = payload.split('|');
+        if (a[1] == '1') {
+            response = { "text": "+1" }
+            callSendAPI(sender_psid, response); 
+        }
+        else {
+            response = { "text": "Oops, wrong answer -1" }
+            callSendAPI(sender_psid, response);
+        }
+        if (a[0] < 10) {
+            response = generateQuestion(sender_psid, a[0] + 1);
+        }
     }
     // Send the message to acknowledge the postback
     callSendAPI(sender_psid, response);
