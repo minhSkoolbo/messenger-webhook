@@ -85,11 +85,16 @@ function handleMessage(sender_psid, received_message) {
 
     // Check if the message contains text
     if (received_message.text) {
-
-        // Create the payload for a basic text message
-        response = {
-            "text": `You sent the message: "${received_message.text}". Now send me an image!`
+        if (received_message.text == 'play') {
+            // create a math question
+            response = generateQuestion(sender_psid, 0);
         }
+        else {
+            // Create the payload for a basic text message
+            response = {
+                "text": `You sent the message: "${received_message.text}". Now send me an image!`
+            }
+        } 
     }
     else if (received_message.attachments) {
         // Gets the URL of the message attachment
@@ -125,7 +130,43 @@ function handleMessage(sender_psid, received_message) {
     // Sends the response message
     callSendAPI(sender_psid, response);
 }
-    
+
+function generateQuestion(sender_psid, question_idx) {
+    let x = Math.floor(Math.random() * 12);
+    let y = Math.floor(Math.random() * 12);
+    let a1 = x * y + Math.floor(Math.random() * 2);
+    let a2 = x * y + Math.floor(Math.random() * 2);
+    response = {
+        "attachment": {
+            "type": "template",
+            "payload": {
+                "template_type": "generic",
+                "elements": [{
+                    "title": "Choose the correct answer:",
+                    "subtitle": x + " * " + y,
+                    "buttons": [
+                        {
+                            "type": "postback",
+                            "title": a1,
+                            "payload": a1 == x * y,
+                        },
+                        {
+                            "type": "postback",
+                            "title": a2,
+                            "payload": a2 == x * y,
+                        },
+                        {
+                            "type": "postback",
+                            "title": "None of the above",
+                            "payload": a1 != x * y && a2 != x * y,
+                        }
+                    ],
+                }]
+            }
+        }
+    }
+}
+
 function callSendAPI(sender_psid, response) {
     // Construct the message body
     let request_body = {
@@ -161,6 +202,11 @@ function handlePostback(sender_psid, received_postback) {
         response = { "text": "Thanks!" }
     } else if (payload === 'no') {
         response = { "text": "Oops, try sending another image." }
+    }
+    else if (payload === true) {
+        response = { "text": "+1" }
+    } else if (payload === false) {
+        response = { "text": "Oops, wrong answer -1" }
     }
     // Send the message to acknowledge the postback
     callSendAPI(sender_psid, response);
