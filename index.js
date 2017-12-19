@@ -137,18 +137,18 @@ function handleMessage(sender_psid, received_message) {
 
 function generateQuestion(sender_psid, question_idx, score, seed) {
     let x, y;
-    if (~~seed) {
+    if (!~~seed) {
         seed = Math.floor(Math.random() * 20);
         x = Math.floor(Math.random() * seed);
         y = Math.floor(Math.random() * seed);
     }
     else {
         if (Math.random() < 0.5) {
-            x = seed;
-            y = Math.floor(Math.random() * (seed + 1));
+            x = ~~seed;
+            y = Math.floor(Math.random() * (~~seed + 1));
         }
         else {
-            x = Math.floor(Math.random() * (seed + 1));
+            x = Math.floor(Math.random() * (~~seed + 1));
             y = seed;
         }
     }
