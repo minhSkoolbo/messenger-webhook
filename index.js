@@ -85,7 +85,7 @@ function handleMessage(sender_psid, received_message) {
 
     // Check if the message contains text
     if (received_message.text) {
-        if (received_message.text == 'play') {
+        if (received_message.text.toLowerCase() == 'play') {
             // create a math question
             response = generateQuestion(sender_psid, 0);
         }
@@ -204,7 +204,7 @@ function handlePostback(sender_psid, received_postback) {
     } else if (payload === 'no') {
         response = { "text": "Oops, try sending another image." }
     }
-    else if (payload.include('|')) {
+    else if (payload.includes('|')) {
         let a = payload.split('|');
         if (a[1] == '1') {
             response = { "text": "+1" }
