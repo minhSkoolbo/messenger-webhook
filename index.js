@@ -87,12 +87,16 @@ function handleMessage(sender_psid, received_message) {
     if (received_message.text) {
         if (received_message.text.toLowerCase() == 'play' || received_message.text.toLowerCase() == 'ok') {
             // create a math question
-            response = generateQuestion(sender_psid, 0, 0);
+            response = generateQuestion(sender_psid, 0, 0, 0);
+        }
+        else if (~~received_message.text) {
+            let seed = ~~received_message.text;
+            response = generateQuestion(sender_psid, 0, 0, seed);
         }
         else {
             // Create the payload for a basic text message
             response = {
-                "text": `You said: "${received_message.text}". Now let's play game! OK?`
+                "text": `You said: "${received_message.text}". Now let's play a Timetable game! OK?`
             }
         }
     }
@@ -131,9 +135,23 @@ function handleMessage(sender_psid, received_message) {
     callSendAPI(sender_psid, response);
 }
 
-function generateQuestion(sender_psid, question_idx, score) {
-    let x = Math.floor(Math.random() * 12);
-    let y = Math.floor(Math.random() * 12);
+function generateQuestion(sender_psid, question_idx, score, seed) {
+    let x, y;
+    if (~~seed) {
+        seed = Math.floor(Math.random() * 20);
+        x = Math.floor(Math.random() * seed);
+        y = Math.floor(Math.random() * seed);
+    }
+    else {
+        if (Math.random() < 0.5) {
+            x = seed;
+            y = Math.floor(Math.random() * (seed + 1));
+        }
+        else {
+            x = Math.floor(Math.random() * (seed + 1));
+            y = seed;
+        }
+    }
     let a1 = x * y + Math.floor(Math.random() * 2);
     let a2 = x * y + Math.floor(Math.random() * 2);
     if (a1 == a2) a2++;
@@ -149,17 +167,17 @@ function generateQuestion(sender_psid, question_idx, score) {
                         {
                             "type": "postback",
                             "title": a1,
-                            "payload": `${question_idx}|${a1 == x * y ? 1 : 0}|${score}`,
+                            "payload": `${question_idx}|${a1 == x * y ? 1 : 0}|${score}|${seed}`,
                         },
                         {
                             "type": "postback",
                             "title": a2,
-                            "payload": `${question_idx}|${a2 == x * y ? 1 : 0}|${score}`,
+                            "payload": `${question_idx}|${a2 == x * y ? 1 : 0}|${score}|${seed}`,
                         },
                         {
                             "type": "postback",
                             "title": "None of the above",
-                            "payload": `${question_idx}|${a1 != x * y && a2 != x * y ? 1 : 0}|${score}`,
+                            "payload": `${question_idx}|${a1 != x * y && a2 != x * y ? 1 : 0}|${score}|${seed}`,
                         }
                     ],
                 }]
@@ -207,7 +225,7 @@ function handlePostback(sender_psid, received_postback) {
         response = { "text": "Oops, try sending another image." }
     }
     else if (payload === 'play') {
-        response = generateQuestion(sender_psid, 0, 0);
+        response = generateQuestion(sender_psid, 0, 0, 0);
     }
     else if (payload === 'quit') {
         response = { "text": "Thank you. See you next time!" }
@@ -217,6 +235,7 @@ function handlePostback(sender_psid, received_postback) {
         let question_idx = ~~a[0];
         let answer = ~~a[1];
         let score = ~~a[2];
+        let seed = ~~a[3];
         if (answer == 1) {
             ++score;
             response = { "text": "Correct! +1" }
@@ -228,7 +247,7 @@ function handlePostback(sender_psid, received_postback) {
         if (question_idx < 9) {
             callSendAPI(sender_psid, response);
 
-            response = generateQuestion(sender_psid, question_idx + 1, score);
+            response = generateQuestion(sender_psid, question_idx + 1, score, seed);
             callSendAPI(sender_psid, response);
             return;
         }
