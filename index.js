@@ -91,6 +91,10 @@ function handleMessage(sender_psid, received_message) {
             "text": `You sent the message: "${received_message.text}". Now send me an image!`
         }
     }
+    else if (received_message.attachments) {
+        // Gets the URL of the message attachment
+        let attachment_url = received_message.attachments[0].payload.url;
+    } 
 
     // Sends the response message
     callSendAPI(sender_psid, response);
