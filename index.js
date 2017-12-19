@@ -152,9 +152,9 @@ function generateQuestion(sender_psid, question_idx, score, seed) {
             y = seed;
         }
     }
-    let a1 = x * y + Math.floor(Math.random() * 2);
-    let a2 = x * y + Math.floor(Math.random() * 2);
-    if (a1 == a2) a2++;
+    let a1 = x * (y + Math.floor(Math.random() * 3) - 1);
+    let a2 = x * (y + Math.floor(Math.random() * 3) - 1);
+    if (a1 == a2) a2 = a2 + (x ? x : y);
     let response = {
         "attachment": {
             "type": "template",
