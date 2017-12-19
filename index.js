@@ -144,22 +144,22 @@ function generateQuestion(sender_psid, question_idx, score) {
                 "template_type": "generic",
                 "elements": [{
                     "title": x + " * " + y + " = ?",
-                    "subtitle": "Choose the correct answer",
+                    "subtitle": `${score}/${question_idx}. Choose the correct answer`,
                     "buttons": [
                         {
                             "type": "postback",
                             "title": a1,
-                            "payload": question_idx + "|" + (a1 == x * y ? 1 : 0) + "|" + score,
+                            "payload": `${question_idx}|${a1 == x * y ? 1 : 0}|${score}`,
                         },
                         {
                             "type": "postback",
                             "title": a2,
-                            "payload": question_idx + "|" + (a2 == x * y ? 1 : 0) + "|" + score,
+                            "payload": `${question_idx}|${a2 == x * y ? 1 : 0}|${score}`,
                         },
                         {
                             "type": "postback",
                             "title": "None of the above",
-                            "payload": question_idx + "|" + (a1 != x * y && a2 != x * y ? 1 : 0) + "|" + score,
+                            "payload": `${question_idx}|${a1 != x * y && a2 != x * y ? 1 : 0}|${score}`,
                         }
                     ],
                 }]
@@ -202,7 +202,7 @@ function handlePostback(sender_psid, received_postback) {
     // Set the response based on the postback payload
     if (payload === 'yes') {
         response = { "text": "Thanks!" }
-    } 
+    }
     else if (payload === 'no') {
         response = { "text": "Oops, try sending another image." }
     }
@@ -222,7 +222,7 @@ function handlePostback(sender_psid, received_postback) {
             response = { "text": "Correct! +1" }
         }
         else {
-            response = { "text": "Oops, wrong answer! -1" }
+            response = { "text": "Oops, wrong answer!" }
         }
 
         if (question_idx < 9) {
@@ -233,7 +233,7 @@ function handlePostback(sender_psid, received_postback) {
             return;
         }
         else {
-            response = { "text": "Game Over. Score = " + score + " / " + question_idx }
+            response = { "text": `Game Over. Score = ${score} / ${question_idx}` }
             callSendAPI(sender_psid, response);
 
             response = {
