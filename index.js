@@ -233,7 +233,7 @@ function handlePostback(sender_psid, received_postback) {
             return;
         }
         else {
-            response = { "text": `Game Over. Score = ${score} / ${question_idx}` }
+            response = { "text": `Game Over. Score = ${score} / ${question_idx + 1}` }
             callSendAPI(sender_psid, response);
 
             response = {
