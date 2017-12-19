@@ -136,7 +136,7 @@ function generateQuestion(sender_psid, question_idx) {
     let y = Math.floor(Math.random() * 12);
     let a1 = x * y + Math.floor(Math.random() * 2);
     let a2 = x * y + Math.floor(Math.random() * 2);
-    response = {
+    let response = {
         "attachment": {
             "type": "template",
             "payload": {
