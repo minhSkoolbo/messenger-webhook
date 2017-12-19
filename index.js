@@ -85,14 +85,14 @@ function handleMessage(sender_psid, received_message) {
 
     // Check if the message contains text
     if (received_message.text) {
-        if (received_message.text.toLowerCase() == 'play') {
+        if (received_message.text.toLowerCase() == 'play' || received_message.text.toLowerCase() == 'ok') {
             // create a math question
             response = generateQuestion(sender_psid, 0, 0);
         }
         else {
             // Create the payload for a basic text message
             response = {
-                "text": `You said: "${received_message.text}". Now let's play game!`
+                "text": `You said: "${received_message.text}". Now let's play game! OK?`
             }
         }
     }
