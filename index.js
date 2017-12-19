@@ -87,14 +87,14 @@ function handleMessage(sender_psid, received_message) {
     if (received_message.text) {
         if (received_message.text.toLowerCase() == 'play') {
             // create a math question
-            response = generateQuestion(sender_psid, 0);
+            response = generateQuestion(sender_psid, 0, 0);
         }
         else {
             // Create the payload for a basic text message
             response = {
                 "text": `You sent the message: "${received_message.text}". Now send me an image!`
             }
-        } 
+        }
     }
     else if (received_message.attachments) {
         // Gets the URL of the message attachment
@@ -124,14 +124,14 @@ function handleMessage(sender_psid, received_message) {
                 }
             }
         }
-      
-    } 
+
+    }
 
     // Sends the response message
     callSendAPI(sender_psid, response);
 }
 
-function generateQuestion(sender_psid, question_idx) {
+function generateQuestion(sender_psid, question_idx, score) {
     let x = Math.floor(Math.random() * 12);
     let y = Math.floor(Math.random() * 12);
     let a1 = x * y + Math.floor(Math.random() * 2);
@@ -142,23 +142,23 @@ function generateQuestion(sender_psid, question_idx) {
             "payload": {
                 "template_type": "generic",
                 "elements": [{
-                    "title": "Choose the correct answer:",
-                    "subtitle": x + " * " + y,
+                    "title": x + " * " + y + " = ?",
+                    "subtitle": "Choose the correct answer",
                     "buttons": [
                         {
                             "type": "postback",
                             "title": a1,
-                            "payload": question_idx + "|" + (a1 == x * y ? 1 : 0),
+                            "payload": question_idx + "|" + (a1 == x * y ? 1 : 0) + "|" + score,
                         },
                         {
                             "type": "postback",
                             "title": a2,
-                            "payload": question_idx + "|" + (a2 == x * y ? 1 : 0),
+                            "payload": question_idx + "|" + (a2 == x * y ? 1 : 0) + "|" + score,
                         },
                         {
                             "type": "postback",
                             "title": "None of the above",
-                            "payload": question_idx + "|" + (a1 != x * y && a2 != x * y ? 1 : 0),
+                            "payload": question_idx + "|" + (a1 != x * y && a2 != x * y ? 1 : 0) + "|" + score,
                         }
                     ],
                 }]
@@ -201,24 +201,59 @@ function handlePostback(sender_psid, received_postback) {
     // Set the response based on the postback payload
     if (payload === 'yes') {
         response = { "text": "Thanks!" }
-    } else if (payload === 'no') {
+    } 
+    else if (payload === 'no') {
         response = { "text": "Oops, try sending another image." }
+    }
+    else if (payload === 'quit') {
+        response = { "text": "Thank you. See you next time!" }
     }
     else if (payload.includes('|')) {
         let a = payload.split('|');
-        if (a[1] == '1') {
-            response = { "text": "+1" }
-            callSendAPI(sender_psid, response); 
-        }
-        else {
-            response = { "text": "Oops, wrong answer -1" }
+        let question_idx = ~~a[0];
+        let answer = ~~a[1];
+        let score = ~~a[2];
+        if (answer == 1) {
+            ++score;
+            response = { "text": "Correct! +1" }
             callSendAPI(sender_psid, response);
         }
-        if (a[0] < 10) {
-            response = generateQuestion(sender_psid, a[0] + 1);
+        else {
+            response = { "text": "Oops, wrong answer! -1" }
+            callSendAPI(sender_psid, response);
+        }
+        if (question_idx < 10) {
+            response = generateQuestion(sender_psid, question_idx + 1, score);
+        }
+        else {
+            response = { "text": "Game Over. Score = " + score + " / " + (a[0] + 1) }
+            callSendAPI(sender_psid, response);
+
+            response = {
+                "attachment": {
+                    "type": "template",
+                    "payload": {
+                        "template_type": "generic",
+                        "elements": [{
+                            "title": "Do you want to play another game?",
+                            "buttons": [
+                                {
+                                    "type": "postback",
+                                    "title": "Yes",
+                                    "payload": 'play',
+                                },
+                                {
+                                    "type": "postback",
+                                    "title": "No",
+                                    "payload": 'quit',
+                                }
+                            ],
+                        }]
+                    }
+                }
+            }
         }
     }
     // Send the message to acknowledge the postback
     callSendAPI(sender_psid, response);
 }
-  
