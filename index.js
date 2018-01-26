@@ -117,8 +117,31 @@ function handleMessage(sender_psid, received_message) {
         }
         else {
             // Create the payload for a basic text message
+            // response = {
+            //     "text": `You said: "${received_message.text}". Would you like to Play a game or learn Vocab?`
+            // }
             response = {
-                "text": `You said: "${received_message.text}". Would you like to Play a game or learn Vocab?`
+                "attachment": {
+                    "type": "template",
+                    "payload": {
+                        "template_type": "generic",
+                        "elements": [{
+                            "title": `You said: "${received_message.text}". Would you like to Play a game or learn Vocab?`,
+                            "buttons": [
+                                {
+                                    "type": "postback",
+                                    "title": "Game",
+                                    "payload": 'play',
+                                },
+                                {
+                                    "type": "postback",
+                                    "title": "Vocab",
+                                    "payload": 'vocab',
+                                }
+                            ],
+                        }]
+                    }
+                }
             }
         }
     }
