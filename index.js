@@ -284,31 +284,34 @@ function handlePostback(sender_psid, received_postback) {
                 "payload": {
                     "template_type": "list",
                     "top_element_style": "compact",
-                    "elements": [{
-                        "title": `${nextWord}`,
-                        "subtitle": "definition here",
-                        "default_action": {
-                            "type": "web_url",
-                            "url": `${Vocab.dictionaryEng(nextWord)}`,
-                            "messenger_extensions": false,
-                            "webview_height_ratio": "tall"
-                        },
-                        "buttons": [
-                            {
-                                "type": "postback",
-                                "title": "Learn another",
-                                "payload": 'vocab',
+                    "elements": [
+                        {
+                            "title": `${nextWord}`,
+                            "subtitle": "definition here",
+                            "default_action": {
+                                "type": "web_url",
+                                "url": `${Vocab.dictionaryEng(nextWord)}`,
+                                "messenger_extensions": false,
+                                "webview_height_ratio": "tall"
                             },
-                            {
-                                "type": "postback",
-                                "title": "Quit",
-                                "payload": 'quit',
-                            }
-                        ],
-                    }]
+                            "buttons": [
+                                {
+                                    "type": "postback",
+                                    "title": "Learn another",
+                                    "payload": 'vocab',
+                                },
+                                {
+                                    "type": "postback",
+                                    "title": "Quit",
+                                    "payload": 'quit',
+                                }
+                            ]
+                        },
+                    ]
                 }
             }
-        }    }
+        }
+    }
     else if (payload.includes('|')) {
         let a = payload.split('|');
         let question_idx = ~~a[0];
