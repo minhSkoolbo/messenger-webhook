@@ -276,8 +276,31 @@ function handlePostback(sender_psid, received_postback) {
         response = { "text": "Thank you. See you next time!" }
     }
     else if (payload === 'vocab') {
-        response = { "text": "Here is the words for you to learn today:" + Vocab.nextWord() }
-    }
+        //response = { "text": "Here is the words for you to learn today:" + Vocab.nextWord() }
+        response = {
+            "attachment": {
+                "type": "template",
+                "payload": {
+                    "template_type": "generic",
+                    "elements": [{
+                        "title": `Here is the words for you to learn today: ${Vocab.nextWord()}`,
+                        "subtitle": `${Vocab.dictionaryEng}`,
+                        "buttons": [
+                            {
+                                "type": "postback",
+                                "title": "Learn another",
+                                "payload": 'vocab',
+                            },
+                            {
+                                "type": "postback",
+                                "title": "Quit",
+                                "payload": 'quit',
+                            }
+                        ],
+                    }]
+                }
+            }
+        }    }
     else if (payload.includes('|')) {
         let a = payload.split('|');
         let question_idx = ~~a[0];
