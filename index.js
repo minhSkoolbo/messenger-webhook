@@ -287,7 +287,7 @@ function handlePostback(sender_psid, received_postback) {
                     "elements": [
                         {
                             "title": nextWord,
-                            "subtitle": "definition here",
+                            "subtitle": "definition below",
                             "default_action": {
                                 "type": "web_url",
                                 "url": `${Vocab.dictionaryEng(nextWord)}`,
