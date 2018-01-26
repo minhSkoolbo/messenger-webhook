@@ -285,7 +285,7 @@ function handlePostback(sender_psid, received_postback) {
                     "template_type": "generic",
                     "elements": [{
                         "title": `Here is a word for you to learn today: ${nextWord}`,
-                        "subtitle": `${Vocab.dictionaryEng(nextWord)}`,
+                        "url": `${Vocab.dictionaryEng(nextWord)}`,
                         "buttons": [
                             {
                                 "type": "postback",
