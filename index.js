@@ -277,14 +277,15 @@ function handlePostback(sender_psid, received_postback) {
     }
     else if (payload === 'vocab') {
         //response = { "text": "Here is the words for you to learn today:" + Vocab.nextWord() }
+        let nextWord = Vocab.nextWord();
         response = {
             "attachment": {
                 "type": "template",
                 "payload": {
                     "template_type": "generic",
                     "elements": [{
-                        "title": `Here is the words for you to learn today: ${Vocab.nextWord()}`,
-                        "subtitle": `${Vocab.dictionaryEng}`,
+                        "title": `Here is a word for you to learn today: ${nextWord}`,
+                        "subtitle": `${Vocab.dictionaryEng(nextWord)}`,
                         "buttons": [
                             {
                                 "type": "postback",
