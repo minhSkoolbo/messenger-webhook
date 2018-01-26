@@ -277,7 +277,7 @@ function handlePostback(sender_psid, received_postback) {
     }
     else if (payload === 'vocab') {
         let nextWord = Vocab.nextWord();
-        response = { "text": "Here is the words for you to learn today:" + nextWord }
+        //response = { "text": "Here is the words for you to learn today:" + nextWord }
         response = {
             "attachment": {
                 "type": "template",
@@ -295,6 +295,13 @@ function handlePostback(sender_psid, received_postback) {
                                 "webview_height_ratio": "tall"
                             },
                             "buttons": [
+                                {
+                                    "title": "Vietnamese translation",
+                                    "type": "web_url",
+                                    "url": `${Vocab.translateEngVie(nextWord)}`,
+                                    "messenger_extensions": false,
+                                    "webview_height_ratio": "tall"
+                                },
                                 {
                                     "type": "postback",
                                     "title": "Learn another",
