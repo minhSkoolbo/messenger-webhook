@@ -282,10 +282,17 @@ function handlePostback(sender_psid, received_postback) {
             "attachment": {
                 "type": "template",
                 "payload": {
-                    "template_type": "generic",
+                    "template_type": "list",
+                    "top_element_style": "compact",
                     "elements": [{
-                        "title": `Here is a word for you to learn today: ${nextWord}`,
-                        "url": `${Vocab.dictionaryEng(nextWord)}`,
+                        "title": `${nextWord}`,
+                        "subtitle": "definition here",
+                        "default_action": {
+                            "type": "web_url",
+                            "url": `${Vocab.dictionaryEng(nextWord)}`,
+                            "messenger_extensions": false,
+                            "webview_height_ratio": "tall"
+                        },
                         "buttons": [
                             {
                                 "type": "postback",
