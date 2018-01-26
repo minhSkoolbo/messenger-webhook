@@ -276,17 +276,17 @@ function handlePostback(sender_psid, received_postback) {
         response = { "text": "Thank you. See you next time!" }
     }
     else if (payload === 'vocab') {
-        //response = { "text": "Here is the words for you to learn today:" + Vocab.nextWord() }
         let nextWord = Vocab.nextWord();
+        response = { "text": "Here is the words for you to learn today:" + nextWord }
         response = {
             "attachment": {
                 "type": "template",
                 "payload": {
-                    "template_type": "list",
-                    "top_element_style": "compact",
+                    "template_type": "generic",
+                    //"top_element_style": "compact",
                     "elements": [
                         {
-                            "title": `${nextWord}`,
+                            "title": nextWord,
                             "subtitle": "definition here",
                             "default_action": {
                                 "type": "web_url",
