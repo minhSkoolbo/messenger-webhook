@@ -1,3 +1,5 @@
+//import { read } from 'fs';
+
 'use strict';
 
 const PAGE_ACCESS_TOKEN = process.env.PAGE_ACCESS_TOKEN;
@@ -8,6 +10,10 @@ const
     express = require('express'),
     bodyParser = require('body-parser'),
     app = express().use(bodyParser.json()); // creates express http server
+
+var
+    Skoolbo = require('./skoolbo.js').Skoolbo,
+    Vocab = require('./vocab.js').Vocab;
 
 // Sets server port and logs message on success
 app.listen(process.env.PORT || 1337, () => console.log('webhook is listening'));
@@ -51,6 +57,22 @@ app.post('/webhook', (req, res) => {
 
 });
 
+app.get('/', (req, res) => {
+    res.status(200).send('MessGame v0.1');
+});
+
+app.get('/skoolbo', (req, res) => {
+    Skoolbo.get(req, res);
+    //res.status(200).send('MessGame v0.1');
+});
+
+app.get('/skoolbo/game_demo', (req, res) => {
+    Skoolbo.game_demo(req, res);
+    //res.status(200).send('MessGame v0.1');
+});
+
+
+
 // Adds support for GET requests to our webhook
 app.get('/webhook', (req, res) => {
 
@@ -89,14 +111,14 @@ function handleMessage(sender_psid, received_message) {
             // create a math question
             response = generateQuestion(sender_psid, 0, 0, 0);
         }
-        else if (~~received_message.text) {
+        else if (~~received_message.text) { // a number
             let seed = ~~received_message.text;
             response = generateQuestion(sender_psid, 0, 0, seed);
         }
         else {
             // Create the payload for a basic text message
             response = {
-                "text": `You said: "${received_message.text}". Now let's play a Timetable game! OK?`
+                "text": `You said: "${received_message.text}". Would you like to Play a game or learn Vocab?`
             }
         }
     }
@@ -229,6 +251,9 @@ function handlePostback(sender_psid, received_postback) {
     }
     else if (payload === 'quit') {
         response = { "text": "Thank you. See you next time!" }
+    }
+    else if (payload === 'vocab') {
+        response = { "text": "Here is the words for you to learn today:" + Vocab.nextWord() }
     }
     else if (payload.includes('|')) {
         let a = payload.split('|');
